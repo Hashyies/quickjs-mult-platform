@@ -5,7 +5,7 @@ on:
 
 jobs:
   build_windows:
-    name: Windows x64
+    name: Windows x64 Build
     runs-on: windows-latest
     steps:
       - name: Clone QuickJS Repository
@@ -37,7 +37,7 @@ jobs:
           cp libquickjs.a ../qjs/Lib/Win64/libquickjs.a
 
       - name: Upload Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: qjs_bin
           path: qjs
