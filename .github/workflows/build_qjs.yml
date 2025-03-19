@@ -11,17 +11,18 @@ jobs:
       - name: Clone QuickJS Repository
         run: git clone https://github.com/bellard/quickjs.git
 
-      - name: Create Output Directories
-        run: |
-          mkdir qjs\Lib\Win64
+      - name: Create Output Directory
+        run: mkdir qjs\Lib\Win64
 
       - name: Build QuickJS Static Library using MSVC
         shell: cmd
         run: |
           cd quickjs
-          rem Compile all C files in the repository in release mode.
+          rem Set up MSVC environment; adjust the path if using a different Visual Studio edition
+          call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+          rem Compile all .c files in release mode
           cl /c /O2 *.c
-          rem Create a static library (libquickjs.lib) from all object files.
+          rem Create a static library (.lib) from the object files
           lib /OUT:..\qjs\Lib\Win64\libquickjs.lib *.obj
 
       - name: Upload Artifact
