@@ -11,30 +11,18 @@ jobs:
       - name: Clone QuickJS Repository
         run: git clone https://github.com/bellard/quickjs.git
 
-      - name: Setup MSYS2 Environment
-        uses: msys2/setup-msys2@v2
-        with:
-          update: true
-          install: 'cmake mingw-w64-x86_64-gcc mingw-w64-x86_64-make mingw-w64-x86_64-dlfcn'
-
-      - name: Create Make Shim for MSYS2
-        shell: msys2 {0}
+      - name: Create Output Directories
         run: |
-          echo "#! /bin/sh" > /mingw64/bin/make
-          echo "\"mingw32-make\" \"\$@\"" >> /mingw64/bin/make
+          mkdir qjs\Lib\Win64
 
-      - name: Build QuickJS Static Library
-        shell: msys2 {0}
+      - name: Build QuickJS Static Library using MSVC
+        shell: cmd
         run: |
           cd quickjs
-          make libquickjs.a
-
-      - name: Prepare Artifact
-        shell: bash
-        run: |
-          cd quickjs
-          mkdir -p ../qjs/Lib/Win64
-          cp libquickjs.a ../qjs/Lib/Win64/libquickjs.a
+          rem Compile all C files in the repository in release mode.
+          cl /c /O2 *.c
+          rem Create a static library (libquickjs.lib) from all object files.
+          lib /OUT:..\qjs\Lib\Win64\libquickjs.lib *.obj
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
